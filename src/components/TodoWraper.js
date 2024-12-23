@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TodoForm from "./TodoForm";
 import Todo from "./todo";
 import { v4 as uuidv4 } from "uuid";
@@ -6,8 +6,16 @@ import EditTodoForm from "./EditTodoForm";
 // uuidv4();
 
 const TodoWraper = () => {
-  const [todos, setTodos] = useState([]);
+  const loadTodos = () => {
+    const savedTodos = localStorage.getItem("todos");
+    return savedTodos ? JSON.parse(savedTodos) : [];
+  };
+  const [todos, setTodos] = useState(loadTodos());
   const [filter, setFilter] = useState("all");
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const addTodo = (todo) => {
     setTodos([
@@ -43,18 +51,24 @@ const TodoWraper = () => {
       )
     );
   };
+
   const filteredTodos = todos.filter((todo) => {
-    if (filter === "all") return true;
-    if (filter === "completed") return todo.completed;
-    if (filter === "uncompleted") return !todo.completed;
-    return true;
+    if (filter === "completed") {
+      return todo.completed;
+    } else if (filter === "uncompleted") {
+      return !todo.completed;
+    }
+    return true; // 'all' case
   });
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
 
   return (
     <div className="TodoWrapper">
       <h1>Get Things Done</h1>
-      <TodoForm addTodo={addTodo} setFilter={setFilter} />
-      {/* Render Filtered Todos */}
+      <TodoForm addTodo={addTodo} handleFilterChange={handleFilterChange} />
       {filteredTodos.map((todo) =>
         todo.isEditing ? (
           <EditTodoForm editTodo={editTask} task={todo} key={todo.id} />
@@ -68,19 +82,6 @@ const TodoWraper = () => {
           />
         )
       )}
-      {/* {todos.map((todo, index) =>
-        todo.isEditing ? (
-          <EditTodoForm editTodo={editTask} task={todo} />
-        ) : (
-          <Todo
-            task={todo}
-            key={index}
-            toggleComplete={toggleComplete}
-            deleteTodo={deleteTodo}
-            editTodo={editTodo}
-          />
-        )
-      )} */}
     </div>
   );
 };

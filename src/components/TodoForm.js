@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TodoForm = ({ addTodo }) => {
+const TodoForm = ({ addTodo, handleFilterChange }) => {
   const [value, setValue] = useState("");
 
   const handleSubmit = (e) => {
@@ -18,6 +18,17 @@ const TodoForm = ({ addTodo }) => {
       <button type="submit" className="todo-btn">
         Add Task
       </button>
+      <div className="select">
+        <select
+          name="todos"
+          className="filter-todo"
+          onChange={handleFilterChange}
+        >
+          <option value="all">All</option>
+          <option value="completed">Completed</option>
+          <option value="uncompleted">Uncompleted</option>
+        </select>
+      </div>
     </form>
   );
 };
