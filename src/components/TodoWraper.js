@@ -7,6 +7,7 @@ import EditTodoForm from "./EditTodoForm";
 
 const TodoWraper = () => {
   const [todos, setTodos] = useState([]);
+  const [filter, setFilter] = useState("all");
 
   const addTodo = (todo) => {
     setTodos([
@@ -42,11 +43,32 @@ const TodoWraper = () => {
       )
     );
   };
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "all") return true;
+    if (filter === "completed") return todo.completed;
+    if (filter === "uncompleted") return !todo.completed;
+    return true;
+  });
+
   return (
     <div className="TodoWrapper">
       <h1>Get Things Done</h1>
-      <TodoForm addTodo={addTodo} />
-      {todos.map((todo, index) =>
+      <TodoForm addTodo={addTodo} setFilter={setFilter} />
+      {/* Render Filtered Todos */}
+      {filteredTodos.map((todo) =>
+        todo.isEditing ? (
+          <EditTodoForm editTodo={editTask} task={todo} key={todo.id} />
+        ) : (
+          <Todo
+            task={todo}
+            key={todo.id}
+            toggleComplete={toggleComplete}
+            deleteTodo={deleteTodo}
+            editTodo={editTodo}
+          />
+        )
+      )}
+      {/* {todos.map((todo, index) =>
         todo.isEditing ? (
           <EditTodoForm editTodo={editTask} task={todo} />
         ) : (
@@ -58,7 +80,7 @@ const TodoWraper = () => {
             editTodo={editTodo}
           />
         )
-      )}
+      )} */}
     </div>
   );
 };

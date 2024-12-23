@@ -87,3 +87,14 @@ h1 {
 .delete-icon {
   cursor: pointer;
 }
+
+.filter-container {
+  margin-top: 10px;
+}
+
+.filter-select {
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
